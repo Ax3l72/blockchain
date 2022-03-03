@@ -1,0 +1,32 @@
+{
+  "name": "blockchain",
+  "version": "1.0.0",
+  "description": "Blockchain",
+  "main": "index.js",
+  "dependencies": {
+    "@discordjs/rest": "^0.3.0",
+    "body-parser": "^1.19.2",
+    "discord.js": "^13.6.0",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "express-handlebars": "^6.0.2",
+    "nodemon": "^2.0.15",
+    "request": "^2.88.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ax3l72/blockchain.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ax3l72/blockchain/issues"
+  },
+  "homepage": "https://github.com/Ax3l72/blockchain#readme"
+}
