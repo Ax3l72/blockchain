@@ -1,8 +1,12 @@
 console.log("Run Bot");
 require("dotenv").config();
 
-const { REST } = require("@discordjs/rest");
-const { Routes } = require("discord-api-types/v9");
+const {
+  REST
+} = require("@discordjs/rest");
+const {
+  Routes
+} = require("discord-api-types/v9");
 
 const CLIENT_ID = process.env.CLIENT_ID;
 const GUILD_ID = process.env.GUILD_ID;
@@ -10,8 +14,7 @@ const token = process.env.BOT_TOKEN;
 
 const RequestRPC = require('./api-blockchain')
 
-const commands = [
-  {
+const commands = [{
     name: "ping",
     description: "Replies with Pong!",
   },
@@ -20,16 +23,23 @@ const commands = [
     description: "Blockchain getblockcount",
   },
   {
-    name: "blc",
+    name: "bl",
     description: "Blockchain getbalance",
   },
   {
     name: "info",
     description: "Get info blockchain",
   },
+  {
+    name: "help",
+    description: "test",
+  },
+
 ];
 
-const rest = new REST({ version: "9" }).setToken(token);
+const rest = new REST({
+  version: "9"
+}).setToken(token);
 
 (async () => {
   try {
@@ -43,8 +53,16 @@ const rest = new REST({ version: "9" }).setToken(token);
   }
 })();
 
-const { Client, Intents } = require("discord.js");
-const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+const {
+  Client,
+  Intents,
+  MessageActionRow,
+  MessageSelectMenu,
+  MessageEmbed
+} = require("discord.js");
+const client = new Client({
+  intents: [Intents.FLAGS.GUILDS]
+});
 
 client.on("ready", () => {
   console.log(`Logged in as ${client.user.tag}!`);
@@ -54,7 +72,10 @@ client.on("interactionCreate", async (interaction) => {
   if (!interaction.isCommand()) return;
 
   if (interaction.commandName === "ping") {
-    await interaction.reply("Pong!");
+    await interaction.deferReply();
+    const reply = await interaction.editReply("Ping?");
+    await interaction.editReply(`Pong!  La latence est de ${reply.createdTimestamp - interaction.createdTimestamp}ms. & La latence de l'API est de ${Math.round(client.ws.ping)}ms.`);
+
   }
 
   if (interaction.commandName === "block") {
@@ -74,9 +95,34 @@ client.on("interactionCreate", async (interaction) => {
   if (interaction.commandName === "info") {
     const r = new RequestRPC('getinfo')
     r.GetBlockChain().then(data => {
-      console.log(data)
+      //console.log(data)
       interaction.reply(`__**Getinfo :**__ \nName: ${data.result.name}\nDifficulty: ${data.result.difficulty}\nBalance: ${data.result.balance}\nBlocks: ${data.result.blocks} \nLongest block: ${data.result.longestchain} \nConnections: ${data.result.connections}`);
     })
+  }
+
+  if (interaction.commandName === 'help') {
+    const row = new MessageActionRow()
+      .addComponents(
+        new MessageSelectMenu()
+        .setCustomId('selector')
+        .setPlaceholder('Nothing selected')
+        .addOptions([{
+            label: 'getinfo',
+            description: 'getinfo',
+            value: 'getinfo',
+          },
+          {
+            label: 'You can select me too',
+            description: 'This is also a description',
+            value: 'second_option',
+          },
+        ]),
+      );
+    const msg = await interaction.reply({
+      ephemeral: true,
+      components: [row]
+    });
+
   }
 });
 
