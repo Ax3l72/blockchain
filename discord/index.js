@@ -131,7 +131,6 @@ client.on("interactionCreate", async (interaction) => {
 
     if (interaction.customId === "selector") {
 
-      let message = await interaction.channel.messages.fetch(interaction.message.id)
       let value = interaction.values
 
       if (value[0] === "getinfo") {
