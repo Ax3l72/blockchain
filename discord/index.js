@@ -95,7 +95,6 @@ client.on("interactionCreate", async (interaction) => {
   if (interaction.commandName === "info") {
     const r = new RequestRPC('getinfo')
     r.GetBlockChain().then(data => {
-      //console.log(data)
       interaction.reply(`__**Getinfo :**__ \nName: ${data.result.name}\nDifficulty: ${data.result.difficulty}\nBalance: ${data.result.balance}\nBlocks: ${data.result.blocks} \nLongest block: ${data.result.longestchain} \nConnections: ${data.result.connections}`);
     })
   }
@@ -112,9 +111,9 @@ client.on("interactionCreate", async (interaction) => {
             value: 'getinfo',
           },
           {
-            label: 'You can select me too',
-            description: 'This is also a description',
-            value: 'second_option',
+            label: 'Get balance',
+            description: 'balance',
+            value: 'balance',
           },
         ]),
       );
@@ -125,5 +124,40 @@ client.on("interactionCreate", async (interaction) => {
 
   }
 });
+
+client.on("interactionCreate", async (interaction) => {
+  try {
+    if (!interaction.isSelectMenu()) return
+
+    if (interaction.customId === "selector") {
+
+      let message = await interaction.channel.messages.fetch(interaction.message.id)
+      let value = interaction.values
+
+      if (value[0] === "getinfo") {
+        const r = new RequestRPC('getinfo')
+        r.GetBlockChain().then(data => {
+          interaction.reply(`__**Getinfo :**__ \nName: ${data.result.name}\nDifficulty: ${data.result.difficulty}\nBalance: ${data.result.balance}\nBlocks: ${data.result.blocks} \nLongest block: ${data.result.longestchain} \nConnections: ${data.result.connections}`);
+        })
+
+      } else if (value[0] === "balance") {
+        const r = new RequestRPC('getbalance')
+        r.GetBlockChain().then(data => {
+          interaction.reply("__**Balance :**__ " + data.result);
+        })
+      }
+
+    }
+
+    // if error
+  } catch (e) {
+    console.error(e)
+    interaction.followUp({
+      content: e.message,
+      ephemeral: true
+    })
+  }
+
+})
 
 client.login(token);
